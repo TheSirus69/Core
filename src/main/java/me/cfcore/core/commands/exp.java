@@ -14,7 +14,7 @@ public class exp implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (sender instanceof Player p){
-            if (command.getName().equalsIgnoreCase("exp")){
+            if (command.getName().equalsIgnoreCase("coreexp")){
                 UUID playerId = p.getUniqueId();
                 FileConfiguration playerData = Core.plugin.getPlayerData();
                 String playerIdStr = playerId.toString();
@@ -34,7 +34,6 @@ public class exp implements CommandExecutor {
                         Core.plugin.savePlayerData(playerId, level, expCommand, playerClass);
                     }else{
                         StringBuilder builder = new StringBuilder();
-
                         for (int i = 0; i < args.length; i++) {
                             builder.append(args[i]);
                         }
@@ -45,7 +44,6 @@ public class exp implements CommandExecutor {
 
                     }
                 }
-// Test Commit Text Message
             }
 
         }

@@ -1,11 +1,14 @@
 package me.cfcore.core;
 
+import me.cfcore.core.commands.Class;
+import me.cfcore.core.commands.exp;
 import me.cfcore.core.commands.level;
 import me.cfcore.core.listeners.onPlayerJoin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,6 +29,8 @@ public class Core extends JavaPlugin {
         createPlayerData();
         getServer().getPluginManager().registerEvents(new onPlayerJoin(), this);
         Objects.requireNonNull(getCommand("level")).setExecutor(new level());
+        Objects.requireNonNull(getCommand("class")).setExecutor(new Class());
+        Objects.requireNonNull(getCommand("coreexp")).setExecutor(new exp());
     }
 
     private void createPlayerData() {
