@@ -34,7 +34,9 @@ public class onPlayerJoin implements Listener {
         ItemMeta bookMeta = bookStack.getItemMeta();
         Objects.requireNonNull(bookMeta).addEnchant(Enchantment.DURABILITY, 0, true);
         bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        bookMeta.setDisplayName("Player Profile");
         bookStack.setItemMeta(bookMeta);
+
 
         player.getInventory().setItem(8, bookStack);
 
@@ -81,7 +83,6 @@ public class onPlayerJoin implements Listener {
         if (event.getSlot() == 8){
             event.setCancelled(true);
         }
-
     }
 
 
@@ -90,7 +91,9 @@ public class onPlayerJoin implements Listener {
         Player p = event.getPlayer();
 
         if (event.getItemDrop().getItemStack().getType() == Material.BOOK){
-            event.setCancelled(true);
+            if (Objects.requireNonNull(event.getItemDrop().getItemStack().getItemMeta()).getDisplayName().equalsIgnoreCase("Player Profile")){
+                event.setCancelled(true);
+            }
         }
     }
 }

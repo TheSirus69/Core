@@ -4,12 +4,14 @@ import me.cfcore.core.commands.Class;
 import me.cfcore.core.commands.exp;
 import me.cfcore.core.commands.level;
 import me.cfcore.core.listeners.onPlayerJoin;
+import me.cfcore.core.listeners.onRightClick;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -19,18 +21,26 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Core extends JavaPlugin {
+public class Core extends JavaPlugin implements Listener {
     private FileConfiguration playerData;
     public static Core plugin;
 
     @Override
     public void onEnable() {
         plugin = this;
+
         createPlayerData();
+
+        Bukkit.getServer().getPluginManager().registerEvents(this, this);
+
+
+        // Command Implementers
         getServer().getPluginManager().registerEvents(new onPlayerJoin(), this);
+        getServer().getPluginManager().registerEvents(new onRightClick(), this);
         Objects.requireNonNull(getCommand("level")).setExecutor(new level());
         Objects.requireNonNull(getCommand("class")).setExecutor(new Class());
         Objects.requireNonNull(getCommand("coreexp")).setExecutor(new exp());
+        //
     }
 
     private void createPlayerData() {
