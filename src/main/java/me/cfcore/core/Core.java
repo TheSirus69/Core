@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,9 +28,18 @@ public class Core extends JavaPlugin implements Listener {
     public void onEnable() {
         plugin = this;
 
+
         createPlayerData();
 
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
+
+        getServer().getPluginManager().registerEvents(this, this);
+
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            for (FastBoard board : this.boards.values()) {
+                updateBoard(board);
+            }
+        }, 0, 20);
 
 
         // Command Implementers
@@ -40,7 +48,6 @@ public class Core extends JavaPlugin implements Listener {
         Objects.requireNonNull(getCommand("level")).setExecutor(new level());
         Objects.requireNonNull(getCommand("class")).setExecutor(new Class());
         Objects.requireNonNull(getCommand("coreexp")).setExecutor(new exp());
-        //
     }
 
     private void createPlayerData() {
@@ -64,10 +71,11 @@ public class Core extends JavaPlugin implements Listener {
         return this.playerData;
     }
 
-    public void savePlayerData(UUID playerId, int level, int exp, String playerClass) {
+    public void savePlayerData(UUID playerId, int level, int exp, String playerClass, int reqexp) {
         playerData.set(playerId+".level", level);
         playerData.set(playerId+".exp", exp);
         playerData.set(playerId+".class", playerClass);
+        playerData.set(playerId+".reqexp", reqexp);
 
         File playerDataFile = new File(getDataFolder(), "playerData.yml");
         try {
@@ -80,6 +88,7 @@ public class Core extends JavaPlugin implements Listener {
     public Map<String, Object> loadPlayerData(UUID playerId) {
         int level = playerData.getInt(playerId+".level", 0);
         int exp = playerData.getInt(playerId+".exp", 0);
+        int reqexp = playerData.getInt(playerId+".reqexp");
         String playerClass = playerData.getString(playerId+".class");
 
         Map<String, Object> dataMap = new HashMap<>();
@@ -98,16 +107,18 @@ public class Core extends JavaPlugin implements Listener {
             player.sendMessage("Data Saved");
         }
         System.out.println("Data Saved for all players");
+
     }
 
     private void savePlayerData(Player player) {
         UUID playerId = player.getUniqueId();
         int level = playerData.getInt(playerId+".level", 0);
         int exp = playerData.getInt(playerId+".exp", 0);
+        int reqexp = playerData.getInt(playerId+".reqexp", 10);
         String playerClass = playerData.getString(playerId+".class");
 
         // Call your existing method to save player data
-        savePlayerData(playerId, level, exp, playerClass);
+        savePlayerData(playerId, level, exp, playerClass, reqexp);
     }
 
 }

@@ -1,7 +1,10 @@
 package me.cfcore.core.listeners;
 
 import me.cfcore.core.Core;
+import me.cfcore.core.FastBoard;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,17 +13,23 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 import java.io.File;
 import java.util.Map;
 import java.lang.System;
 
+import static org.bukkit.Bukkit.getServer;
+
 public class onPlayerJoin implements Listener {
+
+    private final Map<UUID, FastBoard> boards = new HashMap<>();
 
     ItemStack bookStack = new ItemStack(Material.BOOK);
     @EventHandler
@@ -37,6 +46,12 @@ public class onPlayerJoin implements Listener {
         bookMeta.setDisplayName("Player Profile");
         bookStack.setItemMeta(bookMeta);
 
+        FastBoard board = new FastBoard(player);
+
+        board.updateTitle(ChatColor.DARK_RED + "Scoreboard");
+
+        this.boards.put(player.getUniqueId(), board);
+
 
         player.getInventory().setItem(8, bookStack);
 
@@ -51,7 +66,7 @@ public class onPlayerJoin implements Listener {
             playerData.set(playerIdStr + ".level", 1);
             playerData.set(playerIdStr + ".exp", 0);
             playerData.set(playerIdStr + ".class", "Human");
-
+            playerData.set(playerIdStr + ".reqexp", 10);
             File playerDataFile = new File(Core.plugin.getDataFolder(), "playerData.yml");
 
             try {
@@ -94,6 +109,27 @@ public class onPlayerJoin implements Listener {
             if (Objects.requireNonNull(event.getItemDrop().getItemStack().getItemMeta()).getDisplayName().equalsIgnoreCase("Player Profile")){
                 event.setCancelled(true);
             }
+        }
+    }
+
+    private void updateBoard(FastBoard board) {
+        board.updateLines(
+                "",
+                "Players: " + getServer().getOnlinePlayers().size(),
+                "",
+                "Kills: " + board.getPlayer().getStatistic(Statistic.PLAYER_KILLS),
+                ""
+        );
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+
+        FastBoard board = this.boards.remove(player.getUniqueId());
+
+        if (board != null) {
+            board.delete();
         }
     }
 }

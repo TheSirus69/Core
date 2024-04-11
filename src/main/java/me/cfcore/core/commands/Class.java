@@ -24,6 +24,7 @@ public class Class implements CommandExecutor {
                     Map<String, Object> Data = pluginInstance.loadPlayerData(playerId);
                     int level = (int) Data.get("level");
                     int exp = (int) Data.get("exp");
+                    int reqexp = (int) Data.get("reqexp");
 
                     if (args.length == 0){
                         p.sendMessage("Input a string!");
@@ -31,7 +32,7 @@ public class Class implements CommandExecutor {
                         String classCommand = args[0];
                         playerData.set(playerIdStr + ".class", classCommand);
                         p.sendMessage("class set to " + classCommand);
-                        Core.plugin.savePlayerData(playerId, level, exp, classCommand);
+                        Core.plugin.savePlayerData(playerId, level, exp, classCommand, reqexp);
                     }else{
                         StringBuilder builder = new StringBuilder();
 
@@ -41,7 +42,7 @@ public class Class implements CommandExecutor {
                         String finalClass = builder.toString();
                         playerData.set(playerIdStr + ".class", finalClass);
                         p.sendMessage("class set to " + finalClass);
-                        Core.plugin.savePlayerData(playerId, level, exp, finalClass);
+                        Core.plugin.savePlayerData(playerId, level, exp, finalClass, reqexp);
 
                     }
                 } else {

@@ -1,6 +1,7 @@
 package me.cfcore.core.commands;
 
 import me.cfcore.core.Core;
+import me.cfcore.core.levelSystem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,6 +24,7 @@ public class exp implements CommandExecutor {
                 if (pluginInstance != null) {
                     Map<String, Object> Data = pluginInstance.loadPlayerData(playerId);
                     int level = (int) Data.get("level");
+                    int reqexp = (int) Data.get("reqexp");
                     String playerClass = (String) Data.get("playerClass");
 
                     if (args.length == 0){
@@ -31,7 +33,7 @@ public class exp implements CommandExecutor {
                         int expCommand = Integer.parseInt(args[0]);
                         playerData.set(playerIdStr + ".exp", expCommand);
                         p.sendMessage("Exp set to " + expCommand);
-                        Core.plugin.savePlayerData(playerId, level, expCommand, playerClass);
+                        Core.plugin.savePlayerData(playerId, level, expCommand, playerClass, reqexp);
                     }else{
                         StringBuilder builder = new StringBuilder();
                         for (int i = 0; i < args.length; i++) {
@@ -40,7 +42,10 @@ public class exp implements CommandExecutor {
                         int finalExp = Integer.parseInt(builder.toString());
                         playerData.set(playerIdStr + ".exp", finalExp);
                         p.sendMessage("Exp set to " + finalExp);
-                        Core.plugin.savePlayerData(playerId, level, finalExp, playerClass);
+                        Core.plugin.savePlayerData(playerId, level, finalExp, playerClass, reqexp);
+                        levelSystem levelupobj = new levelSystem();
+                        levelupobj.levelUp(p);
+                        System.out.println("levelup checked. Waiting for results");
 
                     }
                 }

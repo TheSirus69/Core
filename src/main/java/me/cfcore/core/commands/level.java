@@ -23,6 +23,7 @@ public class level implements CommandExecutor {
                 if (pluginInstance != null) {
                     Map<String, Object> Data = pluginInstance.loadPlayerData(playerId);
                     int exp = (int) Data.get("exp");
+                    int reqexp = (int) Data.get("reqexp");
                     String playerClass = (String) Data.get("playerClass");
 
                     if (args.length == 0){
@@ -31,7 +32,7 @@ public class level implements CommandExecutor {
                         int levelCommand = Integer.parseInt(args[0]);
                         playerData.set(playerIdStr + ".exp", levelCommand);
                         p.sendMessage("Level set to " + levelCommand);
-                        Core.plugin.savePlayerData(playerId, levelCommand, exp, playerClass);
+                        Core.plugin.savePlayerData(playerId, levelCommand, exp, playerClass, reqexp);
                     }else{
                         StringBuilder builder = new StringBuilder();
 
@@ -41,7 +42,7 @@ public class level implements CommandExecutor {
                         int finalLevel = Integer.parseInt(builder.toString());
                         playerData.set(playerIdStr + ".level", finalLevel);
                         p.sendMessage("Level set to " + finalLevel);
-                        Core.plugin.savePlayerData(playerId, finalLevel, exp, playerClass);
+                        Core.plugin.savePlayerData(playerId, finalLevel, exp, playerClass, reqexp);
 
                     }
                 }
